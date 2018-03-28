@@ -1,2 +1,2 @@
 declare let DEV: boolean
-declare var require: any
+declare let require: any

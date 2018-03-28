@@ -1,7 +1,11 @@
-## System config
+### System config
 - node ^8.9.4
 - npm ^5.6.0
 - webpack ^3.11.0 < 4 (global installation)
+- .env: DEV=true for dev mode or remove DEV for production mode
+
+### Starting
+../events_timeline_test_task/client/> webpack
 
 # Написать *Angular* или *VanillaJS* приложение
 

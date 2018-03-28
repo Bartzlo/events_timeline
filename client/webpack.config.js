@@ -11,7 +11,7 @@ const path = require('path')
 
 module.exports = {
   entry: {
-    timeLine_bundle: './src/modules/timeLine/scripts/main.ts'
+    bundle: './src/app.ts'
   },
   output: {
     path: path.resolve(__dirname, 'build'),
@@ -37,20 +37,19 @@ module.exports = {
         test: /\.(scss)$/,
         use: ExtractTextPlugin.extract({
           use: [
+            // { loader: 'style-loader' },
             {
               loader: 'css-loader',
               options: {
-                minimize: !!process.env.DEV,
+                minimize: !process.env.DEV,
                 sourceMap: !!process.env.DEV
               }
-            },
-            {
+            }, {
               loader: 'sass-loader',
               options: {
                 sourceMap: !!process.env.DEV
               }
-            }
-          ]
+            }]
         })
       },
       {
@@ -82,6 +81,13 @@ module.exports = {
       {
         from: './src/index.html',
         to: './index.html',
+        toType: 'file'
+      }
+    ]),
+    new CopyWebpackPlugin([
+      {
+        from: './src/api/events.js',
+        to: './events.js',
         toType: 'file'
       }
     ])

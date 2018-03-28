@@ -83,13 +83,6 @@ module.exports = {
         to: './index.html',
         toType: 'file'
       }
-    ]),
-    new CopyWebpackPlugin([
-      {
-        from: './src/api/events.js',
-        to: './events.js',
-        toType: 'file'
-      }
     ])
   ],
 

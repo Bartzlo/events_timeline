@@ -1,3 +1,5 @@
+// this object we have to get from server
+
 const API = {
   events: [
     {
@@ -53,3 +55,5 @@ const API = {
     }
   ]
 }
+
+export default API

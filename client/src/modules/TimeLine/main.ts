@@ -14,7 +14,8 @@ class TimeLine {
   </div>
   `
 
-  constructor (container: Element) {
+  constructor (container: Element, data: Array<Object>) {
+    console.log(data);
     this.container = container
     
     this.element = document.createElement('div')

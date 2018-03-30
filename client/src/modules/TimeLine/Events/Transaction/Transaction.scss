@@ -1,0 +1,42 @@
+.time-line__item_trans {
+  justify-content: space-between;
+}
+
+.time-line__item_trans_removed {
+  display: none;
+}
+
+.time-line__type-icon_trans {
+  background: url(img/trans_icon.png) no-repeat;
+  background-size: 100%;
+  background-position: center;
+  width: 45px;
+  height: 45px;
+}
+
+.time-line__left_trans {
+  width: 100%;
+}
+
+.time-line__right_trans {
+  margin-right: 25px;
+  text-align: right;
+}
+
+.time-line__date_trans {
+  margin: 3px 0 -2px 0;
+  font-size: 50%;
+}
+
+.time-line__title_trans {
+  font-size: 130%;
+}
+
+.time-line__price_trans {
+  margin: -2px 0 -3px 0;
+  font-size: 130%;
+}
+
+.time-line__currency_trans{
+  font-size: 50%;
+}

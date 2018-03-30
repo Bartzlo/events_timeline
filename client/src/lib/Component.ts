@@ -12,7 +12,11 @@ abstract class Component {
     return this.element
   }
 
-  render () {
+  remove() :void {
+    this.element.remove()
+  }
+
+  protected render () {
     this.element.className = this.elementClassName
     this.element.innerHTML = this.mainTemplate
   }

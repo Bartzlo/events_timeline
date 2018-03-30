@@ -1,7 +1,7 @@
 interface iEventData {
   id: number
   title: string
-  data: string
+  date: string
   type: string
 }
 

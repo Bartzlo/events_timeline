@@ -37,18 +37,21 @@
 - **TypeScript**
 - **CSS препроцессор (любой)**
 
-# Проект должен быть поддерживаемым и расширяемым. Например, если придется добавить еще одно событие, чтобы не пришлось переписывать весь код для добавления нового события.
+## Проект должен быть поддерживаемым и расширяемым. Например, если придется добавить еще одно событие, чтобы не пришлось переписывать весь код для добавления нового события.
 
 
 
-### System config
+
+# Примечание разработчика
+### Для сборки в системе должны быть установлены:
 - node ^8.9.4
 - npm ^5.6.0
 - webpack ^3.11.0 < 4 (global installation)
-- .env: DEV=true for dev mode or remove DEV for production mode
 
-### Starting
-../events_timeline_test_task/client/> webpack
+### Запуск сборки
+- /events_timeline_test_task/client/> webpack 
+>.env: DEV=true for dev mode or remove DEV for production mode 
+> Точка входа /events_timeline_test_task/client/build/index.html
 
 ### Добавление новых типов событий
 Для добавления нового события достатачно отнаследоваться от класса LintedItem и 

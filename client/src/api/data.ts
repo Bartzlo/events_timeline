@@ -22,7 +22,7 @@ const API = {
       'income': false,
       'date': '05.10.2018',
       'type': 'transaction',
-      'removed': true
+      'removed': false
     },
     {
       'id': 3,
@@ -34,13 +34,6 @@ const API = {
       'date': '15.12.2017',
       'type': 'transaction',
       'removed': false
-    },
-    {
-      'id': 4,
-      'title': 'Any string',
-      'date': '01.01.2000',
-      'type': 'unknown',
-      'readed': false
     },
     {
       'id': 5,
@@ -56,7 +49,7 @@ const API = {
       'content': '2 - Lorem ipsum dolor sit amet consectetur, adipisicing elit. Ab esse distinctio reprehenderit accusantium iure tempora atque quidem! Amet esse labore commodi, pariatur ipsam aut. Ipsa earum beatae fugit minima quisquam!',
       'date': '02.04.2017',
       'type': 'news',
-      'readed': true
+      'readed': false
     },
     {
       'id': 7,

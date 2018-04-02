@@ -8,7 +8,6 @@ abstract class Component {
   }
 
   getElement (): Element {
-    this.render()
     return this.element
   }
 

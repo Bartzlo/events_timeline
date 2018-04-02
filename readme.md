@@ -1,12 +1,3 @@
-### System config
-- node ^8.9.4
-- npm ^5.6.0
-- webpack ^3.11.0 < 4 (global installation)
-- .env: DEV=true for dev mode or remove DEV for production mode
-
-### Starting
-../events_timeline_test_task/client/> webpack
-
 # Написать *Angular* или *VanillaJS* приложение
 
 ## Таймлайн событий
@@ -47,3 +38,19 @@
 - **CSS препроцессор (любой)**
 
 # Проект должен быть поддерживаемым и расширяемым. Например, если придется добавить еще одно событие, чтобы не пришлось переписывать весь код для добавления нового события.
+
+
+
+### System config
+- node ^8.9.4
+- npm ^5.6.0
+- webpack ^3.11.0 < 4 (global installation)
+- .env: DEV=true for dev mode or remove DEV for production mode
+
+### Starting
+../events_timeline_test_task/client/> webpack
+
+### Добавление новых типов событий
+Для добавления нового события достатачно отнаследоваться от класса LintedItem и 
+добавить в класс LintedEventFactory ассоциацию имени класса нового события и 
+названия события которое будет отправляться с сервера

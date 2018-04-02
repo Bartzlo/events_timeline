@@ -1,8 +1,9 @@
 .time-line__check-btn_news {
   background: url(img/check_news_icon.png) no-repeat;
   background-size: 100%;
-  width: 30px;
-  height: 30px;
+  width: 25px;
+  height: 25px;
+  cursor: pointer;
 }
 
 .time-line__discript-text_news {
@@ -15,4 +16,9 @@
   right: 10px;
   bottom: 14px;
   margin: 0;
+}
+
+.time-line__discript-date_news {
+  margin: 0;
+  padding: 20px 0 0 20px;
 }

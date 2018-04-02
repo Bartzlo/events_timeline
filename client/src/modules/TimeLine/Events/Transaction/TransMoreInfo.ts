@@ -11,17 +11,29 @@ class TransMoreInfo extends Component {
 
   private textElem: Element
   private text: string
+  private removeParentItem: Function
 
-  constructor (text: string) {
+  constructor (text: string, removeParentItem: Function) {
     super('div')
     this.text = text
+    this.removeParentItem = removeParentItem
+
+    this.element.addEventListener('click', this.trashBtnListener.bind(this))
+    this.render()
   }
 
   protected render () {
     super.render()
-    this.textElem = this.textElem || this.element.querySelector('.time-line__discript-text_trans')
+    this.textElem = this.element.querySelector('.time-line__discript-text_trans')
 
     this.textElem.innerHTML = this.text
+  }
+
+  private trashBtnListener (e: any) {
+    this.element.remove()
+    if (e.target.closest('.time-line__remove-btn_trans')) {
+      this.removeParentItem()
+    }
   }
 }
 

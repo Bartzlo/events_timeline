@@ -1,6 +1,6 @@
 .time-line__type-icon_news {
-  width: 33px;
-  height: 33px;
+  width: 32px;
+  height: 32px;
 }
 
 .time-line__type-icon_news_new {
@@ -13,4 +13,8 @@
   background: url(img/old_news_icon.png) no-repeat;
   background-size: 100%;
   background-position: center;
+}
+
+.time-line__title_news {
+  font-size: 130%;
 }

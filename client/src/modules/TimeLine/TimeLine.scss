@@ -1,7 +1,3 @@
-.time-line {
-  width: 500px;
-}
-
 .time-line__list {
   list-style: none;
   padding: 0;
@@ -11,7 +7,7 @@
   display: flex;
   align-items: center;
   height: 75px;
-  border-bottom: 2px gray solid;
+  border-bottom: 1px gray solid;
   &:focus {
     outline: none;
   }
@@ -36,5 +32,11 @@
 .time-line__discript {
   position: relative;
   background: rgb(232, 235, 247);
-  border-bottom: 2px gray solid;
+  border-bottom: 1px gray solid;
+}
+
+.time-line__sort-block{
+  label {
+    display: block;
+  }
 }

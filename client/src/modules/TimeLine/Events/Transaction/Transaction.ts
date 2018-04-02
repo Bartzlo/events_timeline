@@ -1,11 +1,11 @@
 require('./Transaction.scss')
 import Component from 'lib/Component'
 import TransMoreInfo from './TransMoreInfo'
-import iLintedItem from '../iLintedItem'
+import LintedItem from '../LintedItem'
 import iEventData from '../iEventData';
 import iTimeLine from '../../iTimeLine'
 
-class Transaction extends Component implements iLintedItem {
+class Transaction extends LintedItem {
   protected tagName: string = 'li'
   protected elementClassName: string = 'time-line__item time-line__item_trans'
   protected mainTemplate: string =
@@ -25,7 +25,6 @@ class Transaction extends Component implements iLintedItem {
   private discriptComponent: Component
 
   private parentList: iTimeLine
-  private data: any
   private icon: Element
   private date: Element
   private title: Element
@@ -33,38 +32,45 @@ class Transaction extends Component implements iLintedItem {
   private currency: Element
   private discript: Element
 
-  constructor(itemData: any, parentList: iTimeLine) {
-    super('li')
-    this.data = itemData
-    this.parentList = parentList
+  private unActiveAllItems: Function
+
+  constructor(itemData: any, unActiveAllItems: Function) {
+    super(itemData, unActiveAllItems)
 
     this.element.addEventListener('click', this.clickListener.bind(this))
+    this.render()
   }
 
   protected render () {
     super.render()
 
-    this.icon = this.icon || this.element.querySelector('.time-line__type-icon_trans')
-    this.date = this.date || this.element.querySelector('.time-line__date_trans')
-    this.title = this.title || this.element.querySelector('.time-line__title_trans')
-    this.price = this.price || this.element.querySelector('.time-line__price_trans')
-    this.currency = this.currency || this.element.querySelector('.time-line__currency_trans')
+    this.icon = this.element.querySelector('.time-line__type-icon_trans')
+    this.date = this.element.querySelector('.time-line__date_trans')
+    this.title = this.element.querySelector('.time-line__title_trans')
+    this.currency = this.element.querySelector('.time-line__currency_trans')
+    this.price = this.element.querySelector('.time-line__price_trans')
 
-    this.title.innerHTML = this.data.title
-    this.date.innerHTML = this.data.date
-    this.price.innerHTML = this.data.price
-    this.currency.innerHTML = this.data.currency
-    if (this.data.removed) this.element.classList.add('time-line__item_trans_removed')
+    this.title.innerHTML = this.itemData.title
+    this.date.innerHTML = this.itemData.date
+
+    this.price.innerHTML = this.itemData.price
+    if (this.itemData.income) {
+      this.price.innerHTML = '+' + this.formatePrice(this.itemData.price)
+      this.price.classList.add('time-line__price_trans_income')
+    } else {
+      this.price.innerHTML = '-' + this.formatePrice(this.itemData.price)
+    }
+
+    this.currency.innerHTML = this.itemData.currency
+    if (this.itemData.removed) this.element.classList.add('time-line__item_trans_removed')
   }
 
   private clickListener (e: any) {
-    this.parentList.unActiveAllItems(this)
-
     if (this.isActive) {
       this.unActive()
     } else {
       this.active()
-      this.discriptComponent = new TransMoreInfo(this.data.discript)
+      this.discriptComponent = new TransMoreInfo(this.itemData.discript, this.remove.bind(this))
       this.element.parentElement.insertBefore(this.discriptComponent.getElement(), this.element.nextSibling)
     }
   }
@@ -82,18 +88,15 @@ class Transaction extends Component implements iLintedItem {
     this.element.classList.add('time-line__item')
     this.discriptComponent.remove()
   }
+
+  remove () {
+    this.element.classList.add('time-line__item_trans_removed')
+    console.log('Sendind to server: item - ' + this.itemData.id + ' removed')
+  }
+
+  private formatePrice (price: number) {
+    return price.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ' ')
+  }
 }
 
 export default Transaction
-
-/*
-  'id': 2,
-  'price': 2341.80,
-  'currency': 'EUR',
-  'title': 'Bank 2',
-  'discript': 'Discription for tranaction',
-  'income': false,
-  'data': '05.10.2018',
-  'type': 'transaction',
-  'removed': false
-*/

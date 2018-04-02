@@ -10,8 +10,8 @@
   background: url(img/trans_icon.png) no-repeat;
   background-size: 100%;
   background-position: center;
-  width: 45px;
-  height: 45px;
+  width: 65px;
+  height: 65px;
 }
 
 .time-line__left_trans {
@@ -21,6 +21,7 @@
 .time-line__right_trans {
   margin-right: 25px;
   text-align: right;
+  width: 300px;
 }
 
 .time-line__date_trans {
@@ -35,6 +36,11 @@
 .time-line__price_trans {
   margin: -2px 0 -3px 0;
   font-size: 130%;
+  color: red;
+}
+
+.time-line__price_trans_income {
+  color: green;
 }
 
 .time-line__currency_trans{

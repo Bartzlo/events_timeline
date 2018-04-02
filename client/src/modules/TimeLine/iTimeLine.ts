@@ -1,7 +1,7 @@
-import iLintedItem from './Events/iLintedItem'
+import LintedItem from './Events/LintedItem'
 
 interface iTimeLine {
-  unActiveAllItems(exeptItem: iLintedItem):void
+  unActiveAllItems (exeptItem: LintedItem): void
 }
 
 export default iTimeLine

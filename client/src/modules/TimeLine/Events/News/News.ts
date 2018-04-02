@@ -1,10 +1,10 @@
 require('./News.scss')
 import Component from 'lib/Component'
-import iLintedItem from '../iLintedItem'
+import LintedItem from '../LintedItem'
 import iTimeLine from '../../iTimeLine'
 import NewsMoreInfo from './NewsMoreInfo'
 
-class News extends Component implements iLintedItem {
+class News extends LintedItem {
   protected elementClassName: string = 'time-line__item time-line__item_news'
   protected mainTemplate: string =
   `
@@ -15,37 +15,32 @@ class News extends Component implements iLintedItem {
   private parentList: iTimeLine
   private discriptComponent: Component
   private isActive: boolean = false
-  private data: any
   private title: Element
   private icon: Element
 
-  constructor(itemData: any, parentList: iTimeLine) {
-    super('li')
-    this.data = itemData
-    this.parentList = parentList
-
+  constructor(itemData: any, unActiveAllItems: Function) {
+    super(itemData, unActiveAllItems)
     this.element.addEventListener('click', this.clickListener.bind(this))
+    this.render()
   }
 
   protected render () {
     super.render()
-    this.title = this.title || this.element.querySelector('.time-line__title_news')
-    this.icon = this.icon || this.element.querySelector('.time-line__type-icon_news')
+    this.title = this.element.querySelector('.time-line__title_news')
+    this.icon = this.element.querySelector('.time-line__type-icon_news')
 
-    this.title.innerHTML = this.data.title
-    this.data.readed ?
+    this.title.innerHTML = this.itemData.title
+    this.itemData.readed ?
       this.icon.classList.add('time-line__type-icon_news_old') :
       this.icon.classList.add('time-line__type-icon_news_new')
   }
 
   private clickListener (e: any) {
-    this.parentList.unActiveAllItems(this)
-
     if (this.isActive) {
       this.unActive()
     } else {
       this.active()
-      this.discriptComponent = new NewsMoreInfo(this.data.content)
+      this.discriptComponent = new NewsMoreInfo(this.itemData.content, this.itemData.date, this.check.bind(this))
       this.element.parentElement.insertBefore(this.discriptComponent.getElement(), this.element.nextSibling)
     }
   }
@@ -62,6 +57,18 @@ class News extends Component implements iLintedItem {
     this.element.classList.remove('time-line__item_active')
     this.element.classList.add('time-line__item')
     this.discriptComponent.remove()
+  }
+
+  check () {
+    if (this.icon.classList.contains('time-line__type-icon_news_new')) {
+      this.icon.classList.remove('time-line__type-icon_news_new')
+      this.icon.classList.add('time-line__type-icon_news_old')
+      console.log('Sendind to server: item - ' + this.itemData.id + ' checked')
+    } else {
+      this.icon.classList.add('time-line__type-icon_news_new')
+      this.icon.classList.remove('time-line__type-icon_news_old')
+      console.log('Sendind to server: item - ' + this.itemData.id + ' unchecked')
+    }
   }
 }
 

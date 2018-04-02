@@ -50,7 +50,7 @@
 
 ### Запуск сборки
 - /events_timeline_test_task/client/> webpack 
->.env: DEV=true for dev mode or remove DEV for production mode 
+>.env: DEV=true for dev mode or remove DEV for production mode  
 > Точка входа /events_timeline_test_task/client/build/index.html
 
 ### Добавление новых типов событий

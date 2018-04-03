@@ -106,12 +106,22 @@ var __extends = (this && this.__extends) || (function () {
 
 var LintedItem = /** @class */ (function (_super) {
     __extends(LintedItem, _super);
-    function LintedItem(itemData, unActiveAllItems) {
+    function LintedItem(itemData) {
         var _this = _super.call(this, 'li') || this;
+        _this.isActive = false;
+        _this.id = itemData.id;
+        _this.element.dataset.itemId = itemData.id;
         _this.itemData = itemData;
-        _this.element.addEventListener('click', function () { unActiveAllItems(_this); });
         return _this;
     }
+    LintedItem.prototype.active = function () {
+        this.element.classList.add('time-line__item_active');
+        this.isActive = true;
+    };
+    LintedItem.prototype.unActive = function () {
+        this.element.classList.remove('time-line__item_active');
+        this.isActive = false;
+    };
     return LintedItem;
 }(__WEBPACK_IMPORTED_MODULE_0_lib_Component__["a" /* default */]));
 /* harmony default export */ __webpack_exports__["a"] = (LintedItem);
@@ -242,8 +252,10 @@ var TimeLine = /** @class */ (function (_super) {
         _this.elementClassName = 'time-line';
         _this.mainTemplate = "\n  <header class=\"time-line__header\">\n    <h2 class=\"time-line__title\">\u041B\u0435\u043D\u0442\u0430 \u0441\u043E\u0431\u044B\u0442\u0438\u0439</h2>\n    <div class=\"time-line__sort-block\">\n      <label>\n        \u0421\u043E\u0440\u0442\u0438\u0440\u043E\u0432\u0430\u0442\u044C \u043F\u043E \u0442\u0438\u043F\u0443:\n        <input type=\"checkbox\" class=\"time-line__type-sort\">\n      </label>\n      <label>\n        \u0421\u043E\u0440\u0442\u0438\u0440\u043E\u0432\u0430\u0442\u044C \u043F\u043E \u0434\u0430\u0442\u0435:\n        <select class=\"time-line__date-sort\">\n          <option value=\"new\" selected>\u0421\u043D\u0430\u0447\u0430\u043B\u0430 \u043D\u043E\u0432\u044B\u0435</option>\n          <option value=\"old\">\u0421\u043D\u0430\u0447\u0430\u043B\u0430 \u0441\u0442\u0430\u0440\u044B\u0435</option>\n        </select>\n      </label>\n    </div>\n  </header>\n  <section class=\"time-line__main-section\">\n    <ul class=\"time-line__list\"></ul>\n  </section>\n  <button class=\"time-line__addNews\">\u0414\u043E\u0431\u0430\u0432\u0438\u0442\u044C \u043D\u043E\u0432\u043E\u0441\u0442\u044C</button>\n  <button class=\"time-line__addTrans\">\u0414\u043E\u0431\u0430\u0432\u0438\u0442\u044C \u0442\u0440\u0430\u043D\u0437\u0430\u043A\u0446\u0438\u044E</button>\n  ";
         _this.data = data;
+        _this.lastId = data[data.length - 1].id;
         _this.element.addEventListener('change', _this.filterUpadateListener.bind(_this));
         _this.element.addEventListener('click', function (e) {
+            _this.clickItemListener(e);
             _this.addNewsBtnListener(e);
             _this.addTransBtnListener(e);
         });
@@ -256,7 +268,7 @@ var TimeLine = /** @class */ (function (_super) {
         this.list = this.element.querySelector('.time-line__list');
         this.list.innerHTML = '';
         this.data.forEach(function (item) {
-            var eventObj = _this.lintedEventFactory.createEvent(item, _this);
+            var eventObj = _this.lintedEventFactory.createEvent(item);
             if (eventObj) {
                 _this.itemList.push(eventObj);
             }
@@ -293,12 +305,10 @@ var TimeLine = /** @class */ (function (_super) {
                 }
             });
         }
-        var dicription = document.querySelector('.time-line__discript');
-        if (dicription)
-            dicription.remove();
         this.itemList.forEach(function (item) {
             _this.list.appendChild(item.getElement());
         });
+        this.unActiveAllItems(null);
     };
     TimeLine.prototype.filterUpadateListener = function (e) {
         if (e.target.closest('.time-line__type-sort') || e.target.closest('.time-line__date-sort')) {
@@ -317,12 +327,36 @@ var TimeLine = /** @class */ (function (_super) {
             document.querySelector('.wrapper').appendChild(createForm.getElement());
         }
     };
+    TimeLine.prototype.clickItemListener = function (e) {
+        var htmlElem = e.target.closest('[data-item-id]');
+        if (htmlElem) {
+            var item = this.findItemObject(htmlElem.dataset.itemId);
+            if (item.isActive) {
+                item.unActive();
+            }
+            else {
+                item.active();
+                this.unActiveAllItems(item);
+            }
+            return;
+        }
+    };
     TimeLine.prototype.toDate = function (dateStr) {
         var _a = dateStr.split('.'), day = _a[0], month = _a[1], year = _a[2];
         return new Date(parseInt(year), parseInt(month) - 1, parseInt(day));
     };
+    TimeLine.prototype.findItemObject = function (id) {
+        for (var i = 0; i < this.itemList.length; i++) {
+            if (this.itemList[i].id == id) {
+                return this.itemList[i];
+            }
+        }
+    };
     TimeLine.prototype.addItem = function (itemData) {
-        var item = this.lintedEventFactory.createEvent(itemData, this);
+        if (!itemData.id)
+            itemData.id = this.lastId + 1;
+        this.lastId = itemData.id;
+        var item = this.lintedEventFactory.createEvent(itemData);
         this.itemList.push(item);
         this.sortList();
     };
@@ -349,10 +383,10 @@ var TimeLine = /** @class */ (function (_super) {
 var EventFactory = /** @class */ (function () {
     function EventFactory() {
     }
-    EventFactory.prototype.createEvent = function (eventObject, patentList) {
+    EventFactory.prototype.createEvent = function (eventObject) {
         switch (eventObject.type) {
-            case 'news': return new __WEBPACK_IMPORTED_MODULE_0__News_News__["a" /* default */](eventObject, patentList.unActiveAllItems.bind(patentList));
-            case 'transaction': return new __WEBPACK_IMPORTED_MODULE_1__Transaction_Transaction__["a" /* default */](eventObject, patentList.unActiveAllItems.bind(patentList));
+            case 'news': return new __WEBPACK_IMPORTED_MODULE_0__News_News__["a" /* default */](eventObject);
+            case 'transaction': return new __WEBPACK_IMPORTED_MODULE_1__Transaction_Transaction__["a" /* default */](eventObject);
             default: {
                 console.error('Unknown event type: ' + eventObject.type + ' id: ' + eventObject.id);
                 return null;
@@ -386,12 +420,10 @@ __webpack_require__(9);
 
 var News = /** @class */ (function (_super) {
     __extends(News, _super);
-    function News(itemData, unActiveAllItems) {
-        var _this = _super.call(this, itemData, unActiveAllItems) || this;
+    function News(itemData) {
+        var _this = _super.call(this, itemData) || this;
         _this.elementClassName = 'time-line__item time-line__item_news';
         _this.mainTemplate = "\n  <div class=\"time-line__type-icon time-line__type-icon_news\"></div>\n  <div class=\"time-line__title_news\"></div>\n  ";
-        _this.isActive = false;
-        _this.element.addEventListener('click', _this.clickListener.bind(_this));
         _this.render();
         return _this;
     }
@@ -404,28 +436,17 @@ var News = /** @class */ (function (_super) {
             this.icon.classList.add('time-line__type-icon_news_old') :
             this.icon.classList.add('time-line__type-icon_news_new');
     };
-    News.prototype.clickListener = function (e) {
-        if (this.isActive) {
-            this.unActive();
-        }
-        else {
-            this.active();
-            this.discriptComponent = new __WEBPACK_IMPORTED_MODULE_1__NewsMoreInfo__["a" /* default */](this.itemData.content, this.itemData.date, this.check.bind(this));
-            this.element.parentElement.insertBefore(this.discriptComponent.getElement(), this.element.nextSibling);
-        }
-    };
     News.prototype.active = function () {
-        this.isActive = true;
-        this.element.classList.remove('time-line__item');
-        this.element.classList.add('time-line__item_active');
+        _super.prototype.active.call(this);
+        this.discriptComponent = new __WEBPACK_IMPORTED_MODULE_1__NewsMoreInfo__["a" /* default */](this.itemData.content, this.itemData.date, this.check.bind(this));
+        this.element.parentElement.insertBefore(this.discriptComponent.getElement(), this.element.nextSibling);
     };
     News.prototype.unActive = function () {
-        if (!this.isActive)
-            return;
-        this.isActive = false;
-        this.element.classList.remove('time-line__item_active');
-        this.element.classList.add('time-line__item');
-        this.discriptComponent.remove();
+        _super.prototype.unActive.call(this);
+        if (this.discriptComponent) {
+            this.discriptComponent.remove();
+            this.discriptComponent = null;
+        }
     };
     News.prototype.check = function () {
         if (this.icon.classList.contains('time-line__type-icon_news_new')) {
@@ -524,13 +545,11 @@ __webpack_require__(13);
 
 var Transaction = /** @class */ (function (_super) {
     __extends(Transaction, _super);
-    function Transaction(itemData, unActiveAllItems) {
-        var _this = _super.call(this, itemData, unActiveAllItems) || this;
+    function Transaction(itemData) {
+        var _this = _super.call(this, itemData) || this;
         _this.tagName = 'li';
         _this.elementClassName = 'time-line__item time-line__item_trans';
         _this.mainTemplate = "\n  <div class=\"time-line__type-icon time-line__type-icon_trans\"></div>\n  <div class=\"time-line__left_trans\">\n    <div class=\"time-line__date_trans\"></div>\n    <div class=\"time-line__title_trans\"></div>\n  </div>\n  <div class=\"time-line__right_trans\">\n    <div class=\"time-line__price_trans\"></div>\n    <div class=\"time-line__currency_trans\"></div>\n  </div>\n  ";
-        _this.isActive = false;
-        _this.element.addEventListener('click', _this.clickListener.bind(_this));
         _this.render();
         return _this;
     }
@@ -545,45 +564,34 @@ var Transaction = /** @class */ (function (_super) {
         this.date.innerHTML = this.itemData.date;
         this.price.innerHTML = this.itemData.price;
         if (this.itemData.income) {
-            this.price.innerHTML = '+' + this.formatePrice(this.itemData.price);
+            this.price.innerHTML = '+' + this.formatePrice(parseFloat(this.itemData.price));
             this.price.classList.add('time-line__price_trans_income');
         }
         else {
-            this.price.innerHTML = '-' + this.formatePrice(this.itemData.price);
+            this.price.innerHTML = '-' + this.formatePrice(parseFloat(this.itemData.price));
         }
         this.currency.innerHTML = this.itemData.currency;
         if (this.itemData.removed)
             this.element.classList.add('time-line__item_trans_removed');
     };
-    Transaction.prototype.clickListener = function (e) {
-        if (this.isActive) {
-            this.unActive();
-        }
-        else {
-            this.active();
-            this.discriptComponent = new __WEBPACK_IMPORTED_MODULE_0__TransMoreInfo__["a" /* default */](this.itemData.discript, this.remove.bind(this));
-            this.element.parentElement.insertBefore(this.discriptComponent.getElement(), this.element.nextSibling);
-        }
-    };
     Transaction.prototype.active = function () {
-        this.isActive = true;
-        this.element.classList.remove('time-line__item');
-        this.element.classList.add('time-line__item_active');
+        _super.prototype.active.call(this);
+        this.discriptComponent = new __WEBPACK_IMPORTED_MODULE_0__TransMoreInfo__["a" /* default */](this.itemData.discript, this.remove.bind(this));
+        this.element.parentElement.insertBefore(this.discriptComponent.getElement(), this.element.nextSibling);
     };
     Transaction.prototype.unActive = function () {
-        if (!this.isActive)
-            return;
-        this.isActive = false;
-        this.element.classList.remove('time-line__item_active');
-        this.element.classList.add('time-line__item');
-        this.discriptComponent.remove();
+        _super.prototype.unActive.call(this);
+        if (this.discriptComponent) {
+            this.discriptComponent.remove();
+            this.discriptComponent = null;
+        }
     };
     Transaction.prototype.remove = function () {
         this.element.classList.add('time-line__item_trans_removed');
         console.log('Sendind to server: item - ' + this.itemData.id + ' removed');
     };
     Transaction.prototype.formatePrice = function (price) {
-        return price.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ' ');
+        return price.toFixed(2).replace(/(\d)(?=(\d{3})+(?!\d))/g, "$1 ");
     };
     return Transaction;
 }(__WEBPACK_IMPORTED_MODULE_1__LintedItem__["a" /* default */]));
@@ -674,7 +682,7 @@ var NewNews = /** @class */ (function (_super) {
         _this.mainTemplate = "\n  <h3 class=\"new-news__head-title\">\u0414\u043E\u0431\u0430\u0432\u0438\u0442\u044C \u043D\u043E\u0432\u043E\u0441\u0442\u044C</h3>\n  <form>\n    <label>\u0417\u0430\u0433\u043E\u043B\u043E\u0432\u043E\u043A: <input class=\"new-news__title\" required type=\"text\" ></label>\n    <label>\u0422\u0435\u043A\u0441\u0442: <input class=\"new-news__content\" required type=\"text\"></label>\n    <label>\u0414\u0430\u0442\u0430: <input class=\"new-news__date\" required type=\"text\" placeholder=\"dd.mm.yyyy\" pattern=\"(0[1-9]|1[0-9]|2[0-9]|3[01]).(0[1-9]|1[012]).[0-9]{4}\"></label>\n    <input type=\"submit\" value=\"\u0421\u043E\u0437\u0434\u0430\u0442\u044C\" class=\"new-news__create-btn\">\n    <button class=\"new-news__close-btn\">\u041E\u0442\u043C\u0435\u043D\u0430</button>\n  </form>\n  ";
         _this.addItem = addItem;
         _this.element.addEventListener('submit', function (e) {
-            console.log('Sendind to server: new created');
+            console.log('Sendind to server: news created');
             e.preventDefault();
             _this.createBtnListener(e);
         });

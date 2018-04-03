@@ -2,8 +2,7 @@ require('./Transaction.scss')
 import Component from 'lib/Component'
 import TransMoreInfo from './TransMoreInfo'
 import LintedItem from '../LintedItem'
-import iEventData from '../iEventData';
-import iTimeLine from '../../iTimeLine'
+import iEventData from '../iEventData'
 
 class Transaction extends LintedItem {
   protected tagName: string = 'li'
@@ -21,10 +20,8 @@ class Transaction extends LintedItem {
   </div>
   `
   
-  private isActive:boolean = false
   private discriptComponent: Component
 
-  private parentList: iTimeLine
   private icon: Element
   private date: Element
   private title: Element
@@ -34,10 +31,8 @@ class Transaction extends LintedItem {
 
   private unActiveAllItems: Function
 
-  constructor(itemData: any, unActiveAllItems: Function) {
-    super(itemData, unActiveAllItems)
-
-    this.element.addEventListener('click', this.clickListener.bind(this))
+  constructor(itemData: any) {
+    super(itemData)
     this.render()
   }
 
@@ -55,38 +50,28 @@ class Transaction extends LintedItem {
 
     this.price.innerHTML = this.itemData.price
     if (this.itemData.income) {
-      this.price.innerHTML = '+' + this.formatePrice(this.itemData.price)
+      this.price.innerHTML = '+' + this.formatePrice(parseFloat(this.itemData.price))
       this.price.classList.add('time-line__price_trans_income')
     } else {
-      this.price.innerHTML = '-' + this.formatePrice(this.itemData.price)
+      this.price.innerHTML = '-' + this.formatePrice(parseFloat(this.itemData.price))
     }
 
     this.currency.innerHTML = this.itemData.currency
     if (this.itemData.removed) this.element.classList.add('time-line__item_trans_removed')
   }
 
-  private clickListener (e: any) {
-    if (this.isActive) {
-      this.unActive()
-    } else {
-      this.active()
-      this.discriptComponent = new TransMoreInfo(this.itemData.discript, this.remove.bind(this))
-      this.element.parentElement.insertBefore(this.discriptComponent.getElement(), this.element.nextSibling)
-    }
-  }
-
   active () {
-    this.isActive = true
-    this.element.classList.remove('time-line__item')
-    this.element.classList.add('time-line__item_active')
+    super.active()
+    this.discriptComponent = new TransMoreInfo(this.itemData.discript, this.remove.bind(this))
+      this.element.parentElement.insertBefore(this.discriptComponent.getElement(), this.element.nextSibling)
   }
 
   unActive () {
-    if (!this.isActive) return
-    this.isActive = false
-    this.element.classList.remove('time-line__item_active')
-    this.element.classList.add('time-line__item')
-    this.discriptComponent.remove()
+    super.unActive()
+    if (this.discriptComponent) {
+      this.discriptComponent.remove()
+      this.discriptComponent = null
+    }
   }
 
   remove () {
@@ -95,7 +80,7 @@ class Transaction extends LintedItem {
   }
 
   private formatePrice (price: number) {
-    return price.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ' ')
+    return price.toFixed(2).replace(/(\d)(?=(\d{3})+(?!\d))/g, "$1 ")
   }
 }
 

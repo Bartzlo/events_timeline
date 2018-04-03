@@ -8,9 +8,6 @@
   align-items: center;
   height: 75px;
   border-bottom: 1px gray solid;
-  &:focus {
-    outline: none;
-  }
 }
 
 .time-line__item_active {
@@ -19,9 +16,6 @@
   align-items: center;
   height: 75px;
   border-bottom: none;
-  &:focus {
-    outline: none;
-  }
 }
 
 .time-line__type-icon {

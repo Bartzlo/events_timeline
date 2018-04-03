@@ -1,5 +1,5 @@
 abstract class Component {
-  protected element: Element
+  protected element: HTMLElement
   protected abstract elementClassName: string
   protected abstract mainTemplate: string
 

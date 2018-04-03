@@ -2,14 +2,14 @@ require ('./TimeLine.scss')
 import Component from 'lib/Component'
 import LintedEventFactory from './Events/LintedEventFactory'
 import iEventData from './Events/iEventData'
-import iTimeLine from './iTimeLine';
-import LintedItem from './Events/LintedItem';
-import NewNews from './Events/News/NewNews';
-import NewTransaction from './Events/Transaction/NewTransaction';
+import LintedItem from './Events/LintedItem'
+import NewNews from './Events/News/NewNews'
+import NewTransaction from './Events/Transaction/NewTransaction'
 
-class TimeLine extends Component implements iTimeLine {
+class TimeLine extends Component {
   private data: Array<iEventData>
   private itemList: Array<LintedItem> = []
+  private lastId: number
   private lintedEventFactory = new LintedEventFactory()
 
   protected elementClassName = 'time-line' 
@@ -43,9 +43,11 @@ class TimeLine extends Component implements iTimeLine {
   constructor (data: Array<iEventData>) {
     super('div')
     this.data = data
+    this.lastId = data[data.length - 1].id
     
     this.element.addEventListener('change', this.filterUpadateListener.bind(this))
     this.element.addEventListener('click', e => {
+      this.clickItemListener(e)
       this.addNewsBtnListener(e)
       this.addTransBtnListener(e)
     })
@@ -59,7 +61,7 @@ class TimeLine extends Component implements iTimeLine {
     this.list.innerHTML = ''
   
     this.data.forEach(item => {
-      let eventObj = this.lintedEventFactory.createEvent(item, this)
+      let eventObj = this.lintedEventFactory.createEvent(item)
       if (eventObj) {
         this.itemList.push(eventObj)
       }
@@ -99,12 +101,11 @@ class TimeLine extends Component implements iTimeLine {
       })
     }
 
-    let dicription = document.querySelector('.time-line__discript')
-    if (dicription) dicription.remove()
-
     this.itemList.forEach((item) => {
       this.list.appendChild(item.getElement())
     })
+
+    this.unActiveAllItems(null)
   }
 
   private filterUpadateListener (e: any) {
@@ -127,13 +128,38 @@ class TimeLine extends Component implements iTimeLine {
     }
   }
 
+  private clickItemListener (e: any) {
+    let htmlElem = e.target.closest('[data-item-id]')
+    if (htmlElem) {
+      let item = this.findItemObject(htmlElem.dataset.itemId)
+      if (item.isActive) {
+        item.unActive()
+      } else {
+        item.active()
+        this.unActiveAllItems(item)
+      }
+      return
+    }
+  }
+
   private toDate (dateStr: string) {
     const [day, month, year] = dateStr.split('.')
     return new Date(parseInt(year), parseInt(month) - 1, parseInt(day))
   }
 
+  private findItemObject (id: number) {
+    for (let i = 0; i < this.itemList.length; i++) {
+      if (this.itemList[i].id == id) {
+        return this.itemList[i]
+      }
+    }
+  }
+
   addItem (itemData: any) {
-    let item = this.lintedEventFactory.createEvent(itemData, this)
+    if (!itemData.id) itemData.id = this.lastId + 1
+    this.lastId = itemData.id
+
+    let item = this.lintedEventFactory.createEvent(itemData)
     this.itemList.push(item)
     this.sortList()
   }

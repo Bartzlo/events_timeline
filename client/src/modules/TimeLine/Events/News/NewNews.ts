@@ -25,7 +25,7 @@ class NewNews extends Component {
     this.addItem = addItem
 
     this.element.addEventListener('submit', e => {
-      console.log('Sendind to server: new created')
+      console.log('Sendind to server: news created')
       e.preventDefault()
       this.createBtnListener(e)
     })

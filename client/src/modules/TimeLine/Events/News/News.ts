@@ -1,7 +1,6 @@
 require('./News.scss')
 import Component from 'lib/Component'
 import LintedItem from '../LintedItem'
-import iTimeLine from '../../iTimeLine'
 import NewsMoreInfo from './NewsMoreInfo'
 
 class News extends LintedItem {
@@ -12,15 +11,12 @@ class News extends LintedItem {
   <div class="time-line__title_news"></div>
   `
 
-  private parentList: iTimeLine
   private discriptComponent: Component
-  private isActive: boolean = false
   private title: Element
   private icon: Element
 
-  constructor(itemData: any, unActiveAllItems: Function) {
-    super(itemData, unActiveAllItems)
-    this.element.addEventListener('click', this.clickListener.bind(this))
+  constructor(itemData: any) {
+    super(itemData)
     this.render()
   }
 
@@ -35,28 +31,18 @@ class News extends LintedItem {
       this.icon.classList.add('time-line__type-icon_news_new')
   }
 
-  private clickListener (e: any) {
-    if (this.isActive) {
-      this.unActive()
-    } else {
-      this.active()
-      this.discriptComponent = new NewsMoreInfo(this.itemData.content, this.itemData.date, this.check.bind(this))
-      this.element.parentElement.insertBefore(this.discriptComponent.getElement(), this.element.nextSibling)
-    }
-  }
-
   active () {
-    this.isActive = true
-    this.element.classList.remove('time-line__item')
-    this.element.classList.add('time-line__item_active')
+    super.active()
+    this.discriptComponent = new NewsMoreInfo(this.itemData.content, this.itemData.date, this.check.bind(this))
+      this.element.parentElement.insertBefore(this.discriptComponent.getElement(), this.element.nextSibling)
   }
 
   unActive () {
-    if (!this.isActive) return
-    this.isActive = false
-    this.element.classList.remove('time-line__item_active')
-    this.element.classList.add('time-line__item')
-    this.discriptComponent.remove()
+    super.unActive()
+    if (this.discriptComponent) {
+      this.discriptComponent.remove()
+      this.discriptComponent = null
+    }
   }
 
   check () {
